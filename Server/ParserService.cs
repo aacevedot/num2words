@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Grpc.Core;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 using num2words;
 
@@ -16,11 +17,14 @@ namespace Server
 
         public override Task<WordsResponse> FromNumberToWords(NumberRequest request, ServerCallContext context)
         {
-            var transformed = request.Number.ToString();
+            // TODO: Capture exceptions
+            var encoded = WordsEncoder.FromNumber(request.Number);
+
             var response = new WordsResponse
             {
-                Words = $"Your number is: {transformed}"
+                Words = encoded
             };
+
             return Task.FromResult(response);
         }
     }

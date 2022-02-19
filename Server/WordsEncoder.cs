@@ -40,24 +40,23 @@ namespace Server
 
         public static string FromNumber(long number)
         {
-            var isSingular = SingularCases.TryGetValue((int)number, out var converted);
-            if (isSingular)
+            var integer = (int)number;
+            if (SingularCases.TryGetValue(integer, out var converted))
             {
                 return converted;
             }
 
-            converted = "";
-
             var str = number.ToString();
-            var numbers = str.ToArray().Select(c => Convert.ToInt32(c) - 48).ToArray();
             int first;
             int second;
+            var len = str.Length;
+            int digits;
 
-            switch (numbers.Length)
+            switch (len)
             {
                 case 2:
-                    first = numbers[0];
-                    second = numbers[1];
+                    first = Convert.ToInt32(str[..1]);
+                    second = Convert.ToInt32(str[1..]);
                     if (!TensCases.TryGetValue(first, out var tens))
                     {
                         converted = SingularCases[second] + "teen";
@@ -71,51 +70,31 @@ namespace Server
 
                     break;
                 case 3:
-                    first = numbers[0];
+                    first = Convert.ToInt32(str[..1]);
                     converted = SingularCases[first] + " hundred";
-                    if (number % 100 == 0) break;
-                    converted += " " + FromNumber(number % 100);
+                    second = Convert.ToInt32(str[1..]);
+                    if (second == 0) break;
+                    converted += " " + FromNumber(second);
                     break;
                 case 4:
-                    first = numbers[0];
-                    converted = SingularCases[first] + " thousand";
-                    if (number % 1000 == 0) break;
-                    converted += " " + FromNumber(number % 1000);
-                    break;
                 case 5:
-                    var two = str[..2];
-                    var portion2 = Convert.ToInt64(two);
-                    converted = FromNumber(portion2) + " thousand";
-                    if (number % 1000 == 0) break;
-                    converted += " " + FromNumber(number % 1000);
-                    break;
                 case 6:
-                    var three = str[..3];
-                    var portion3 = Convert.ToInt64(three);
-                    converted = FromNumber(portion3) + " thousand";
-                    if (number % 1000 == 0) break;
-                    converted += " " + FromNumber(number % 1000);
+                    digits = len - 3;
+                    first = Convert.ToInt32(str[..digits]);
+                    converted = FromNumber(first) + " thousand";
+                    second = Convert.ToInt32(str[digits..]);
+                    if (second == 0) break;
+                    converted += " " + FromNumber(second);
                     break;
                 case 7:
-                    first = numbers[0];
-                    converted = SingularCases[first] + " million";
-                    if (number % Math.Pow(10, 6) == 0) break;
-                    var rest1 = Convert.ToInt64(str[1..]);
-                    converted += " " + FromNumber(rest1);
-                    break;
                 case 8:
-                    first = Convert.ToInt32(str[..2]);
-                    converted = FromNumber(first) + " million";
-                    if (number % Math.Pow(10, 6) == 0) break;
-                    var rest2 = Convert.ToInt64(str[2..]);
-                    converted += " " + FromNumber(rest2);
-                    break;
                 case 9:
-                    first = Convert.ToInt32(str[..3]);
+                    digits = len - 6;
+                    first = Convert.ToInt32(str[..digits]);
                     converted = FromNumber(first) + " million";
-                    if (number % Math.Pow(10, 6) == 0) break;
-                    var rest3 = Convert.ToInt64(str[3..]);
-                    converted += " " + FromNumber(rest3);
+                    second = Convert.ToInt32(str[digits..]);
+                    if (second == 0) break;
+                    converted += " " + FromNumber(second);
                     break;
             }
 

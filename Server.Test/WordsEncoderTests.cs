@@ -24,8 +24,17 @@ namespace Server.Test
         [Theory]
         [InlineData(0, "zero")]
         [InlineData(1, "one")]
+        [InlineData(10, "ten")]
+        [InlineData(11, "eleven")]
+        [InlineData(12, "twelve")]
+        [InlineData(19, "nineteen")]
         [InlineData(25, "twenty-five")]
-        [InlineData(451000, "forty-five thousand one hundred dollars")]
+        [InlineData(42, "forty-two")]
+        [InlineData(152, "one hundred fifty-two")]
+        [InlineData(1259, "one thousand two hundred fifty-nine")]
+        [InlineData(45100, "forty-five thousand one hundred")]
+        [InlineData(356137, "three hundred fifty-six thousand one hundred thirty-seven")]
+        [InlineData(1234987, "one million two hundred thirty-four thousand nine hundred eighty-seven")]
         [InlineData(999999999,
             "nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine")]
         public void Test_FromNumber(long input, string expected)

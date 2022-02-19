@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Server
 {
     public static class WordsEncoder
     {
-        private static readonly Dictionary<int, string> Singulars = new()
+        private static readonly Dictionary<int, string> SingularCases = new()
         {
             [0] = "zero",
             [1] = "one",
@@ -27,7 +26,7 @@ namespace Server
             [18] = "eighteen",
         };
 
-        private static readonly Dictionary<int, string> Tens = new()
+        private static readonly Dictionary<int, string> TensCases = new()
         {
             [2] = "twenty",
             [3] = "thirty",
@@ -41,7 +40,7 @@ namespace Server
 
         public static string FromNumber(long number)
         {
-            var isSingular = Singulars.TryGetValue((int)number, out var converted);
+            var isSingular = SingularCases.TryGetValue((int)number, out var converted);
             if (isSingular)
             {
                 return converted;
@@ -53,37 +52,33 @@ namespace Server
             var numbers = str.ToArray().Select(c => Convert.ToInt32(c) - 48).ToArray();
             int first;
             int second;
-            int third;
-            int fourth;
-            int fifth;
-            int sixth;
 
             switch (numbers.Length)
             {
                 case 2:
                     first = numbers[0];
                     second = numbers[1];
-                    if (!Tens.TryGetValue(first, out var tens))
+                    if (!TensCases.TryGetValue(first, out var tens))
                     {
-                        converted = Singulars[second] + "teen";
+                        converted = SingularCases[second] + "teen";
                     }
                     else
                     {
                         converted = second > 0
-                            ? tens + "-" + Singulars[second]
+                            ? tens + "-" + SingularCases[second]
                             : tens;
                     }
 
                     break;
                 case 3:
                     first = numbers[0];
-                    converted = Singulars[first] + " hundred";
+                    converted = SingularCases[first] + " hundred";
                     if (number % 100 == 0) break;
                     converted += " " + FromNumber(number % 100);
                     break;
                 case 4:
                     first = numbers[0];
-                    converted = Singulars[first] + " thousand";
+                    converted = SingularCases[first] + " thousand";
                     if (number % 1000 == 0) break;
                     converted += " " + FromNumber(number % 1000);
                     break;
@@ -103,7 +98,7 @@ namespace Server
                     break;
                 case 7:
                     first = numbers[0];
-                    converted = Singulars[first] + " million";
+                    converted = SingularCases[first] + " million";
                     if (number % Math.Pow(10, 6) == 0) break;
                     var rest1 = Convert.ToInt64(str[1..]);
                     converted += " " + FromNumber(rest1);

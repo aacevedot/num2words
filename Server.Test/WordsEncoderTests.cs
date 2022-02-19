@@ -2,7 +2,7 @@ using Xunit;
 
 namespace Server.Test
 {
-    public class UnitTest1
+    public class WordsEncoderTests
     {
         // TODO: Rules
         //  * 0-9       : zero, one, two, three, four, five, six, seven, eight, nine
@@ -20,9 +20,14 @@ namespace Server.Test
         //  * 1000      : thousand
         //  * 1000000   : million
         //  * 1000000000: billion
-        
+
         [Theory]
         [InlineData(0, "zero")]
+        [InlineData(1, "one")]
+        [InlineData(25, "twenty-five")]
+        [InlineData(451000, "forty-five thousand one hundred dollars")]
+        [InlineData(999999999,
+            "nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine")]
         public void Test_FromNumber(long input, string expected)
         {
             var words = WordsEncoder.FromNumber(input);

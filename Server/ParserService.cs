@@ -18,8 +18,7 @@ namespace Server
         public override Task<WordsResponse> FromNumberToWords(NumberRequest request, ServerCallContext context)
         {
             // TODO: Capture exceptions
-            var encoded = WordsEncoder.FromNumber(request.Number);
-
+            var encoded = WordsEncoder.DoubleToCurrency(request.Number);
             var response = new WordsResponse
             {
                 Words = encoded

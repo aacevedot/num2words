@@ -40,8 +40,7 @@ namespace WpfClient
             {
                 var clientHandler = new HttpClientHandler();
                 clientHandler.UseProxy = false;
-                clientHandler.ServerCertificateCustomValidationCallback =
-                    (sender, cert, chain, sslPolicyErrors) => true;
+                clientHandler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true;
                 var httpClient = new HttpClient(clientHandler);
 
                 var channel = GrpcChannel.ForAddress(server, new GrpcChannelOptions

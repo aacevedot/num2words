@@ -38,14 +38,6 @@ namespace Server
             [9] = "ninety",
         };
 
-        private static readonly Dictionary<int, string> Magnitudes = new()
-        {
-            [1] = "hundred",
-            [2] = "thousand",
-            [3] = "million",
-            [4] = "billion",
-        };
-
         public static string DoubleToCurrency(double number)
         {
             var words = DoubleToWords(number);

@@ -4,25 +4,28 @@ using System.Threading.Tasks;
 using num2words;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using Grpc.Core;
 
 namespace CliClient
 {
     class Program
     {
-        private static readonly Regex Cleaner = new Regex(@"\s+");
-        
+        private static readonly Regex Cleaner = new(@"\s+");
+
         public static async Task Main(string[] args)
         {
-            var clientHandler = new HttpClientHandler();
-            clientHandler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true;
-            var httpClient = new HttpClient(clientHandler);
+            var httpClientHandler = new HttpClientHandler();
+            // NOTE: Only for dev purposes. Prod applications should use valid certs.
+            httpClientHandler.ServerCertificateCustomValidationCallback =
+                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
             const string server = "https://localhost:5001";
             var channel = GrpcChannel.ForAddress(server, new GrpcChannelOptions
             {
-                HttpClient = httpClient
+                HttpHandler = httpClientHandler
             });
             var client = new Parser.ParserClient(channel);
+            var options = new CallOptions().WithWaitForReady();
 
             while (true)
             {
@@ -47,12 +50,20 @@ namespace CliClient
                 try
                 {
                     var request = new NumberRequest { Number = number };
-                    var response = await client.FromNumberToWordsAsync(request);
+                    var response = await client.FromNumberToWordsAsync(request, options);
                     Console.WriteLine(response.Words);
                 }
-                catch
+                catch (RpcException ex) when (ex.StatusCode == StatusCode.Internal)
                 {
-                    Console.WriteLine("error while communicating with the server, try again!");
+                    Console.WriteLine("internal server error, please try again!");
+                }
+                catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
+                {
+                    Console.WriteLine("server unavailable, please try later!");
+                }
+                catch (RpcException ex) when (ex.StatusCode == StatusCode.DeadlineExceeded)
+                {
+                    Console.WriteLine("server timeout, please try again!");
                 }
             }
         }

@@ -3,7 +3,7 @@ syntax = "proto3";
 option csharp_namespace = "num2words";
 
 message NumberRequest {
-  int64 number = 1;
+  double number = 1;
 }
 
 message WordsResponse {

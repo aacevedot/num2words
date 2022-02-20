@@ -15,10 +15,11 @@
         </Grid.RowDefinitions>
 
         <TextBlock x:Name="TextHolder"
-                   Grid.Row="0" Margin="10"
+                   Grid.Row="0" Margin="20"
                    VerticalAlignment="Center"
                    TextAlignment="Center"
                    TextWrapping="Wrap"
+                   FontSize="24"
                    Text="Loading..." />
 
         <StackPanel Grid.Row="1">
@@ -27,7 +28,8 @@
             <Button x:Name="ConvertButton"
                     Content="Convert"
                     Width="150" Margin="10"
-                    Click="convertButton_Click" />
+                    Cursor="Hand"
+                    Click="ConvertButton_Click" />
         </StackPanel>
     </Grid>
 </Window>

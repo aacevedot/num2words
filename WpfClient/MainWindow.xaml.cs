@@ -30,6 +30,7 @@ namespace WpfClient
         public MainWindow()
         {
             InitializeComponent();
+            // TODO: Launch the connection async
             Connect();
         }
 
@@ -69,6 +70,7 @@ namespace WpfClient
                 return;
             }
 
+            // TODO: Add extra validation for the given input; for instance, min&max boundaries
             var number = Convert.ToDouble(InputField.Text);
 
             var req = new NumberRequest

@@ -58,7 +58,9 @@ namespace Server
 
         public static string[] DoubleToWords(double number)
         {
+            // TODO: Check if this rounding approach makes sense
             number = Math.Round(number, 2, MidpointRounding.ToZero);
+
             var str = number.ToString(CultureInfo.InvariantCulture);
             var numberSegments = str.Split('.');
             var totalSegments = numberSegments.Length;
@@ -74,12 +76,13 @@ namespace Server
                 numberAsWordsBeforeComma += "minus ";
                 numberBeforeComma = Math.Abs(numberBeforeComma);
             }
+
             numberAsWordsBeforeComma += IntegerToWords(numberBeforeComma);
 
             converted.Add(numberAsWordsBeforeComma);
 
             if (totalSegments < 2) return converted.ToArray();
-            
+
             var numberAfterComma = Convert.ToInt64(numberSegments[1]);
 
             if (!numberSegments[1].StartsWith("0") && numberAfterComma < 10)

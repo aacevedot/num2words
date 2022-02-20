@@ -46,6 +46,7 @@ namespace Server
                 return $"'{number}' cannot be converted to currency";
             }
 
+            // TODO: Refactor suffixes
             var suffix = words[0] == "one" ? "dollar" : "dollars";
             var asCurrency = words[0] + " " + suffix;
             if (words.Length < 2) return asCurrency;
@@ -106,6 +107,7 @@ namespace Server
             int tail;
             int digits;
 
+            // TODO: Refactor duplicated code
             switch (len)
             {
                 case 2:

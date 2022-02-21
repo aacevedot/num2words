@@ -5,41 +5,101 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfClient"
         mc:Ignorable="d"
-        Title="Number to currency"
+        Title="Converter"
         Height="450" Width="800"
         ResizeMode="NoResize">
-    <Grid HorizontalAlignment="Right" Width="800">
+    <Grid HorizontalAlignment="Right" Width="800" Background="#222831">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="50" />
             <RowDefinition Height="123" />
         </Grid.RowDefinitions>
-        
+
         <TextBlock x:Name="PrimaryText"
                    Grid.Row="0" Margin="20"
                    VerticalAlignment="Center"
                    TextAlignment="Center"
                    TextWrapping="Wrap"
                    FontSize="24"
+                   Foreground="#EEEEEE"
                    Text="Loading..." />
 
-        <TextBlock x:Name="SecondaryText" 
+        <TextBlock x:Name="SecondaryText"
                    Grid.Row="1" Margin="10"
                    VerticalAlignment="Top"
                    TextAlignment="Center"
                    TextWrapping="Wrap"
                    FontSize="14"
+                   FontStyle="Italic"
+                   Foreground="#EEEEEE"
                    Text="" />
 
-        <StackPanel Grid.Row="2">
-            <TextBox x:Name="InputField" Width="350" 
-                     TextAlignment="Center"
-                     />
+        <StackPanel Grid.Row="2"
+                    FocusManager.FocusedElement="{Binding ElementName=InputField}">
+            <Border CornerRadius="10"
+                    Width="350" Height="30"
+                    Background="#393E46">
+                <Grid>
+                    <TextBox x:Name="InputField"
+                             Margin="1"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             Padding="5"
+                             Foreground="#CFCFCF" />
+
+                    <TextBlock IsHitTestVisible="False"
+                               Text="Example: 999 999 999,99"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Margin="10,0,0,0"
+                               FontSize="11"
+                               Foreground="DarkGray">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Text, ElementName=InputField}"
+                                                 Value="">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                                <Setter Property="Visibility" Value="Hidden" />
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+            </Border>
+
             <Button x:Name="ConvertButton"
                     Content="Convert"
+                    FontSize="14"
+                    FontWeight="Medium"
                     Width="150" Margin="10"
-                    Cursor="Hand"
-                    Click="ConvertButton_Click" />
+                    Click="ConvertButton_Click">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Foreground" Value="#EEEEEE" />
+                        <Setter Property="Background" Value="#00ADB5" />
+                        <Setter Property="Cursor" Value="Hand" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#009BA2" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Width="100" Height="25"
+                                CornerRadius="12"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </StackPanel>
     </Grid>
 </Window>

@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 
 namespace Server.Test
@@ -17,13 +18,14 @@ namespace Server.Test
         [InlineData(120.105, "one hundred twenty dollars and ten cents")]
         [InlineData(1.99999, "one dollar and ninety-nine cents")]
         [InlineData(45100, "forty-five thousand one hundred dollars")]
-        [InlineData(999999999.99, "nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine dollars and ninety-nine cents")]
+        [InlineData(999999999.99,
+            "nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine dollars and ninety-nine cents")]
         public void Test_DoubleToCurrency(double input, string expected)
         {
             var words = WordsEncoder.DoubleToCurrency(input);
             Assert.Equal(expected, words);
         }
-        
+
         [Theory]
         [InlineData(12.12, new[] { "twelve", "twelve" })]
         public void Test_DoubleToWords(double input, string[] expected)
@@ -65,8 +67,24 @@ namespace Server.Test
             "one hundred twenty-three million four hundred fifty-six thousand seven hundred eighty-nine")]
         [InlineData(999999999,
             "nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine")]
+        [InlineData(9999999999,
+            "nine billion nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine")]
+        [InlineData(99999999999,
+            "ninety-nine billion nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine")]
+        [InlineData(999999999999,
+            "nine hundred ninety-nine billion nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine")]
+        [InlineData(9999999999999, null)]
+        [InlineData(99999999999999, null)]
+        [InlineData(999999999999999, null)]
+        [InlineData(9223372036854775807, null)]
         public void Test_IntegerToWords(long input, string expected)
         {
+            if (string.IsNullOrEmpty(expected))
+            {
+                Assert.Throws<ArgumentOutOfRangeException>(() => WordsEncoder.IntegerToWords(input));
+                return;
+            }
+
             var words = WordsEncoder.IntegerToWords(input);
             Assert.Equal(expected, words);
         }

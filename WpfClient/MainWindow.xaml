@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:emoji="clr-namespace:Emoji.Wpf;assembly=Emoji.Wpf"
         xmlns:local="clr-namespace:WpfClient"
         mc:Ignorable="d"
         Title="Converter"
@@ -15,24 +16,24 @@
             <RowDefinition Height="123" />
         </Grid.RowDefinitions>
 
-        <TextBlock x:Name="PrimaryText"
-                   Grid.Row="0" Margin="20"
-                   VerticalAlignment="Center"
-                   TextAlignment="Center"
-                   TextWrapping="Wrap"
-                   FontSize="24"
-                   Foreground="#EEEEEE"
-                   Text="Loading..." />
+        <emoji:TextBlock x:Name="PrimaryText"
+                         Grid.Row="0" Margin="30"
+                         VerticalAlignment="Center"
+                         TextAlignment="Center"
+                         TextWrapping="Wrap"
+                         FontSize="24"
+                         Foreground="#EEEEEE"
+                         Text="Loading... ⌛" />
 
-        <TextBlock x:Name="SecondaryText"
-                   Grid.Row="1" Margin="10"
-                   VerticalAlignment="Top"
-                   TextAlignment="Center"
-                   TextWrapping="Wrap"
-                   FontSize="14"
-                   FontStyle="Italic"
-                   Foreground="#EEEEEE"
-                   Text="" />
+        <emoji:TextBlock x:Name="SecondaryText"
+                         Grid.Row="1" Margin="10"
+                         VerticalAlignment="Top"
+                         TextAlignment="Center"
+                         TextWrapping="Wrap"
+                         FontSize="14"
+                         FontStyle="Italic"
+                         Foreground="#EEEEEE"
+                         Text="" />
 
         <StackPanel Grid.Row="2"
                     FocusManager.FocusedElement="{Binding ElementName=InputField}">

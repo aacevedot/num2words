@@ -41,8 +41,8 @@ namespace WpfClient
                     HttpHandler = httpClientHandler
                 });
                 _client = new Parser.ParserClient(channel);
-                PrimaryText.Text = "Let's convert your number to currency!";
-                SecondaryText.Text = "Input a number in the form below";
+                PrimaryText.Text = "Let's convert your number to currency! 💸";
+                SecondaryText.Text = "Input a number in the form below 👇";
             }
             catch (Exception e)
             {
@@ -57,15 +57,15 @@ namespace WpfClient
             {
                 // TODO: Check if this makes sense! (Would the client ever be null???)
                 // TODO: If yes, then trying to reconnect here might be good idea
-                PrimaryText.Text = "Connection failed!";
+                PrimaryText.Text = "Connection failed! 😱";
                 return;
             }
 
             var input = InputField.Text;
             if (string.IsNullOrEmpty(input))
             {
-                PrimaryText.Text = "Your input cannot be empty!";
-                SecondaryText.Text = "Please, provide a valid number!";
+                PrimaryText.Text = "Your input cannot be empty! 😒";
+                SecondaryText.Text = "Please, provide a valid number! 👇";
                 return;
             }
 
@@ -77,13 +77,13 @@ namespace WpfClient
             }
             catch (FormatException)
             {
-                PrimaryText.Text = "Invalid input!";
-                SecondaryText.Text = "Please, provide a valid number!";
+                PrimaryText.Text = "Invalid input! 😵";
+                SecondaryText.Text = "Please, provide a valid number! 👇";
                 return;
             }
 
-            PrimaryText.Text = "Sending request...";
-            SecondaryText.Text = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            PrimaryText.Text = "Sending request... 📡";
+            SecondaryText.Text = $"⏲ {DateTime.Now.ToString(CultureInfo.InvariantCulture)}";
 
             var req = new NumberRequest
             {
@@ -96,23 +96,23 @@ namespace WpfClient
             try
             {
                 var res = await _client.FromNumberToWordsAsync(req);
-                message = res.Words;
+                message = $"{res.Words} 🤑";
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.Internal)
             {
-                message = "An internal server error was detected. Please, try again!";
+                message = "An internal server error was detected! 🤯 \n Please, try again later!";
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
             {
-                message = "The server is unavailable. Please, try again later!";
+                message = "The server is unavailable 😓 \n Please, try again later!";
             }
             catch (RpcException ex) when (ex.StatusCode == StatusCode.DeadlineExceeded)
             {
-                message = "It took too long, the server is not responding. Please, try again!";
+                message = "It took too long, the server is not responding! 💀 \nPlease, try again!";
             }
 
             PrimaryText.Text = message;
-            SecondaryText.Text = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            SecondaryText.Text = $"⏲ {DateTime.Now.ToString(CultureInfo.InvariantCulture)}";
         }
     }
 }

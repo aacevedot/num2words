@@ -6,9 +6,13 @@
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
     </PropertyGroup>
-    
+
     <ItemGroup>
-        <ProjectReference Include="../CliClient/CliClient.csproj" />
+        <ProjectReference Include="../CliClient/CliClient.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Emoji.Wpf" Version="0.3.3"/>
     </ItemGroup>
 
 </Project>

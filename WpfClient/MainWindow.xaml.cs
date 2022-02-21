@@ -102,6 +102,8 @@ namespace WpfClient
                 Number = number
             };
 
+            // TODO: There is still an unhandled exception when the number is too big!
+
             string message;
             try
             {

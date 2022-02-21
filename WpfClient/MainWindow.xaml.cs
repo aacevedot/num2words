@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Grpc.Core;
+using System.Text.RegularExpressions;
 
 namespace WpfClient
 {
@@ -26,6 +27,7 @@ namespace WpfClient
     public partial class MainWindow : Window
     {
         private Parser.ParserClient? _client;
+        private static readonly Regex Cleaner = new(@"\s+");
 
         public MainWindow()
         {
@@ -51,12 +53,13 @@ namespace WpfClient
                     HttpHandler = httpClientHandler
                 });
                 _client = new Parser.ParserClient(channel);
-                TextHolder.Text = "Write a number below...";
+                PrimaryText.Text = "Let's convert your number to currency!";
+                SecondaryText.Text = "Input a number in the form below";
             }
             catch (Exception e)
             {
                 // TODO: This should not be visible!
-                TextHolder.Text = e.Message;
+                PrimaryText.Text = e.Message;
             }
         }
 
@@ -66,12 +69,33 @@ namespace WpfClient
             {
                 // TODO: Check if this makes sense! (Would the client ever be null???)
                 // TODO: If yes, then trying to reconnect here might be good idea
-                TextHolder.Text = "Connection failed!";
+                PrimaryText.Text = "Connection failed!";
                 return;
             }
 
-            // TODO: Add extra validation for the given input; for instance, min&max boundaries
-            var number = Convert.ToDouble(InputField.Text);
+            var input = InputField.Text;
+            if (string.IsNullOrEmpty(input))
+            {
+                PrimaryText.Text = "Your input cannot be empty!";
+                SecondaryText.Text = "Please, provide a valid number!";
+                return;
+            }
+
+            double number;
+            try
+            {
+                input = Cleaner.Replace(input, "");
+                number = Convert.ToDouble(input);
+            }
+            catch (FormatException)
+            {
+                PrimaryText.Text = "Invalid input!";
+                SecondaryText.Text = "Please, provide a valid number!";
+                return;
+            }
+
+            PrimaryText.Text = "Sending request...";
+            SecondaryText.Text = DateTime.Now.ToString();
 
             var req = new NumberRequest
             {
@@ -97,7 +121,8 @@ namespace WpfClient
                 message = "It took too long, the server is not responding. Please, try again!";
             }
 
-            TextHolder.Text = message;
+            PrimaryText.Text = message;
+            SecondaryText.Text = DateTime.Now.ToString();
         }
     }
 }

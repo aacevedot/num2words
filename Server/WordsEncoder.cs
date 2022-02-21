@@ -6,7 +6,7 @@ namespace Server
 {
     public static class WordsEncoder
     {
-        private static readonly Dictionary<int, string> SingularCases = new()
+        private static readonly Dictionary<int, string> SingularNumbers = new()
         {
             [0] = "zero",
             [1] = "one",
@@ -23,10 +23,10 @@ namespace Server
             [12] = "twelve",
             [13] = "thirteen",
             [15] = "fifteen",
-            [18] = "eighteen",
+            [18] = "eighteen"
         };
 
-        private static readonly Dictionary<int, string> TensCases = new()
+        private static readonly Dictionary<int, string> TyNumbers = new()
         {
             [2] = "twenty",
             [3] = "thirty",
@@ -35,24 +35,30 @@ namespace Server
             [6] = "sixty",
             [7] = "seventy",
             [8] = "eighty",
-            [9] = "ninety",
+            [9] = "ninety"
         };
 
         public static string DoubleToCurrency(double number)
         {
-            var words = DoubleToWords(number);
-            if (words == null)
+            var converted = DoubleToWords(number);
+            if (converted == null)
             {
-                return $"'{number}' cannot be converted to currency";
+                return $"'{number}' cannot be converted";
             }
 
-            // TODO: Refactor suffixes
-            var suffix = words[0] == "one" ? "dollar" : "dollars";
-            var asCurrency = words[0] + " " + suffix;
-            if (words.Length < 2) return asCurrency;
+            var dollars = converted[0];
+            var suffix = dollars == "one" ? "dollar" : "dollars";
+            var asCurrency = dollars + " " + suffix;
 
-            suffix = words[1] == "one" ? "cent" : "cents";
-            asCurrency += " and " + words[1] + " " + suffix;
+            if (converted.Length < 2)
+            {
+                return asCurrency;
+            }
+
+            var cents = converted[1];
+            suffix = cents == "one" ? "cent" : "cents";
+            asCurrency += " and " + cents + " " + suffix;
+
             return asCurrency;
         }
 
@@ -62,43 +68,58 @@ namespace Server
             number = Math.Round(number, 2, MidpointRounding.ToZero);
 
             var str = number.ToString(CultureInfo.InvariantCulture);
-            var numberSegments = str.Split('.');
-            var totalSegments = numberSegments.Length;
+            var segments = str.Split('.');
+            var totalSegments = segments.Length;
 
-            if (totalSegments == 0) return null;
+            if (totalSegments is 0 or > 2)
+            {
+                // TODO: Test this scope
+                return null;
+            }
 
+            // if a "micro-optimization" is required; then, refactor this
+            // for using an array of primitives, e.g., new string[len]
             var converted = new List<string>();
+            var words = "";
 
-            var numberBeforeComma = Convert.ToInt64(numberSegments[0]);
-            var numberAsWordsBeforeComma = "";
-            if (numberBeforeComma < 0)
+            var segment = segments[0];
+            var asInteger = Convert.ToInt64(segment);
+
+            // sanity check for negative numbers
+            if (asInteger < 0)
             {
-                numberAsWordsBeforeComma += "minus ";
-                numberBeforeComma = Math.Abs(numberBeforeComma);
+                words += "minus ";
+                asInteger = Math.Abs(asInteger);
             }
 
-            numberAsWordsBeforeComma += IntegerToWords(numberBeforeComma);
+            words += IntegerToWords(asInteger);
 
-            converted.Add(numberAsWordsBeforeComma);
+            converted.Add(words);
 
-            if (totalSegments < 2) return converted.ToArray();
-
-            var numberAfterComma = Convert.ToInt64(numberSegments[1]);
-
-            if (!numberSegments[1].StartsWith("0") && numberAfterComma < 10)
+            if (totalSegments < 2)
             {
-                numberAfterComma *= 10;
+                return converted.ToArray();
             }
 
-            var numberAsWordsAfterComma = IntegerToWords(numberAfterComma);
-            converted.Add(numberAsWordsAfterComma);
+            segment = segments[1];
+            asInteger = Convert.ToInt64(segment);
+
+            // sanity check for numbers lower than 10 after separator
+            if (!segment.StartsWith("0") && asInteger < 10)
+            {
+                asInteger *= 10;
+            }
+
+            words = IntegerToWords(asInteger);
+            converted.Add(words);
 
             return converted.ToArray();
         }
 
+        // TODO: Make this method private?
         public static string IntegerToWords(long number)
         {
-            if (SingularCases.TryGetValue((int)number, out var asWords))
+            if (SingularNumbers.TryGetValue((int)number, out var asWords))
             {
                 return asWords;
             }
@@ -138,13 +159,13 @@ namespace Server
             var tail = Convert.ToInt32(str[offset..]);
             if (suffix.Equals("tens"))
             {
-                if (TensCases.TryGetValue(head, out var ty))
+                if (TyNumbers.TryGetValue(head, out var ty))
                 {
-                    asWords = tail > 0 ? ty + "-" + SingularCases[tail] : ty;
+                    asWords = tail > 0 ? ty + "-" + SingularNumbers[tail] : ty;
                     return asWords;
                 }
 
-                asWords = SingularCases[tail] + "teen";
+                asWords = SingularNumbers[tail] + "teen";
                 return asWords;
             }
 

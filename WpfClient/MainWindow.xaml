@@ -11,10 +11,11 @@
     <Grid HorizontalAlignment="Right" Width="800">
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition Height="150" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="123" />
         </Grid.RowDefinitions>
-
-        <TextBlock x:Name="TextHolder"
+        
+        <TextBlock x:Name="PrimaryText"
                    Grid.Row="0" Margin="20"
                    VerticalAlignment="Center"
                    TextAlignment="Center"
@@ -22,9 +23,18 @@
                    FontSize="24"
                    Text="Loading..." />
 
-        <StackPanel Grid.Row="1">
-            <!-- TODO: Add placeholder -->
-            <TextBox x:Name="InputField" Width="350" />
+        <TextBlock x:Name="SecondaryText" 
+                   Grid.Row="1" Margin="10"
+                   VerticalAlignment="Top"
+                   TextAlignment="Center"
+                   TextWrapping="Wrap"
+                   FontSize="14"
+                   Text="" />
+
+        <StackPanel Grid.Row="2">
+            <TextBox x:Name="InputField" Width="350" 
+                     TextAlignment="Center"
+                     />
             <Button x:Name="ConvertButton"
                     Content="Convert"
                     Width="150" Margin="10"

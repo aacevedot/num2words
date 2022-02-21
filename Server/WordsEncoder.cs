@@ -62,6 +62,7 @@ namespace Server
             return asCurrency;
         }
 
+        // TODO: Make this method private?
         public static string[] DoubleToWords(double number)
         {
             // TODO: Check if this rounding approach makes sense
@@ -116,7 +117,6 @@ namespace Server
             return converted.ToArray();
         }
 
-        // TODO: Make this method private?
         public static string IntegerToWords(long number)
         {
             if (SingularNumbers.TryGetValue((int)number, out var asWords))

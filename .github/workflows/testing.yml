@@ -16,6 +16,4 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Run tests
-        run: |
-          cd Server.Test/ \
-          dotnet test
+        run: dotnet test ./Server.Test/Server.Test.csproj

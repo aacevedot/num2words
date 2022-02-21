@@ -41,10 +41,6 @@ namespace Server
         public static string DoubleToCurrency(double number)
         {
             var converted = DoubleToWords(number);
-            if (converted == null)
-            {
-                return $"'{number}' cannot be converted";
-            }
 
             var dollars = converted[0];
             var suffix = dollars == "one" ? "dollar" : "dollars";
@@ -71,12 +67,6 @@ namespace Server
             var str = number.ToString(CultureInfo.InvariantCulture);
             var segments = str.Split('.');
             var totalSegments = segments.Length;
-
-            if (totalSegments is 0 or > 2)
-            {
-                // TODO: Test this scope
-                return null;
-            }
 
             // if a "micro-optimization" is required; then, refactor this
             // for using an array of primitives, e.g., new string[len]

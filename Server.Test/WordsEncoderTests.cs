@@ -6,6 +6,7 @@ namespace Server.Test
     public class WordsEncoderTests
     {
         [Theory]
+        [InlineData(-0.0, "zero dollars")]
         [InlineData(-19, "minus nineteen dollars")]
         [InlineData(-1999.7809, "minus one thousand nine hundred ninety-nine dollars and seventy-eight cents")]
         [InlineData(0, "zero dollars")]

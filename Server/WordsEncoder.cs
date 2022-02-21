@@ -98,68 +98,61 @@ namespace Server
 
         public static string IntegerToWords(long number)
         {
-            var integer = (int)number;
-            if (SingularCases.TryGetValue(integer, out var converted))
+            if (SingularCases.TryGetValue((int)number, out var asWords))
             {
-                return converted;
+                return asWords;
             }
 
             var str = number.ToString();
-            var len = str.Length;
-            int head;
-            int tail;
-            int digits;
+            var digits = str.Length;
+            int offset;
+            string suffix;
 
-            // TODO: Refactor duplicated code
-            switch (len)
+            switch (digits)
             {
                 case 2:
-                    digits = len - 1;
-                    head = Convert.ToInt32(str[..digits]);
-                    tail = Convert.ToInt32(str[digits..]);
-                    if (!TensCases.TryGetValue(head, out var tens))
-                    {
-                        converted = SingularCases[tail] + "teen";
-                    }
-                    else
-                    {
-                        converted = tail > 0
-                            ? tens + "-" + SingularCases[tail]
-                            : tens;
-                    }
-
+                    offset = digits - 1;
+                    suffix = "tens";
                     break;
                 case 3:
-                    digits = len - 2;
-                    head = Convert.ToInt32(str[..digits]);
-                    converted = IntegerToWords(head) + " hundred";
-                    tail = Convert.ToInt32(str[digits..]);
-                    if (tail == 0) break;
-                    converted += " " + IntegerToWords(tail);
+                    offset = digits - 2;
+                    suffix = "hundred";
                     break;
-                case 4:
-                case 5:
-                case 6:
-                    digits = len - 3;
-                    head = Convert.ToInt32(str[..digits]);
-                    converted = IntegerToWords(head) + " thousand";
-                    tail = Convert.ToInt32(str[digits..]);
-                    if (tail == 0) break;
-                    converted += " " + IntegerToWords(tail);
+                case >= 4 and <= 6:
+                    offset = digits - 3;
+                    suffix = "thousand";
                     break;
-                case 7:
-                case 8:
-                case 9:
-                    digits = len - 6;
-                    head = Convert.ToInt32(str[..digits]);
-                    converted = IntegerToWords(head) + " million";
-                    tail = Convert.ToInt32(str[digits..]);
-                    if (tail == 0) break;
-                    converted += " " + IntegerToWords(tail);
+                case >= 7 and <= 9:
+                    offset = digits - 6;
+                    suffix = "million";
                     break;
+                case >= 10 and <= 12:
+                    offset = digits - 9;
+                    suffix = "billion";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(number), "the number is too long");
             }
 
-            return converted;
+            var head = Convert.ToInt32(str[..offset]);
+            var tail = Convert.ToInt32(str[offset..]);
+            if (suffix.Equals("tens"))
+            {
+                if (TensCases.TryGetValue(head, out var ty))
+                {
+                    asWords = tail > 0 ? ty + "-" + SingularCases[tail] : ty;
+                    return asWords;
+                }
+
+                asWords = SingularCases[tail] + "teen";
+                return asWords;
+            }
+
+            asWords = IntegerToWords(head) + " " + suffix;
+            if (tail == 0) return asWords;
+
+            asWords += " " + IntegerToWords(tail);
+            return asWords;
         }
     }
 }

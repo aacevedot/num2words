@@ -15,9 +15,7 @@ jobs:
         uses: actions/setup-dotnet@v1.7.2
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
-      - name: Show content
-        run: ls -la
-      - name: Accessing server tests
-        run: cd Server.Test/
       - name: Run tests
-        run: dotnet test
+        run: |
+          cd Server.Test/ \
+          dotnet test

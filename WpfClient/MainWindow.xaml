@@ -30,15 +30,46 @@
                    TextAlignment="Center"
                    TextWrapping="Wrap"
                    FontSize="14"
+                   FontStyle="Italic"
                    Foreground="#EEEEEE"
                    Text="" />
 
-        <StackPanel Grid.Row="2">
-            <TextBox x:Name="InputField"
-                     Width="350" Height="30"
-                     VerticalAlignment="Center"
-                     HorizontalAlignment="Center"
-                     TextAlignment="Center" />
+        <StackPanel Grid.Row="2"
+                    FocusManager.FocusedElement="{Binding ElementName=InputField}">
+            <Border CornerRadius="10"
+                    Width="350" Height="30"
+                    Background="#393E46">
+                <Grid>
+                    <TextBox x:Name="InputField"
+                             Margin="1"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             Padding="5"
+                             Foreground="#CFCFCF" />
+
+                    <TextBlock IsHitTestVisible="False"
+                               Text="Example: 999 999 999,99"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"
+                               Margin="10,0,0,0"
+                               FontSize="11"
+                               Foreground="DarkGray">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Text, ElementName=InputField}"
+                                                 Value="">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                                <Setter Property="Visibility" Value="Hidden" />
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+            </Border>
 
             <Button x:Name="ConvertButton"
                     Content="Convert"

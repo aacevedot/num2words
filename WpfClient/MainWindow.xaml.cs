@@ -82,6 +82,13 @@ namespace WpfClient
                 return;
             }
 
+            if (number >= 1E+12)
+            {
+                PrimaryText.Text = "Number too long! 😥";
+                SecondaryText.Text = "Come on! You do not have that much money. Try again with a realistic amount! 😜";
+                return;
+            }
+
             PrimaryText.Text = "Sending request... 📡";
             SecondaryText.Text = $"⏲ {DateTime.Now.ToString(CultureInfo.InvariantCulture)}";
 

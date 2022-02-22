@@ -3,7 +3,7 @@ using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using num2words;
 
-namespace Server
+namespace Server.Services
 {
     public class ParserService : Parser.ParserBase
     {

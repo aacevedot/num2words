@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using num2words;
+using Server.Converters;
 
-namespace Server
+namespace Server.Services
 {
     public class ParserService : Parser.ParserBase
     {
@@ -20,7 +21,7 @@ namespace Server
             string converted;
             try
             {
-                converted = WordsEncoder.DoubleToCurrency(request.Number);
+                converted = CurrencyConverter.FromDoubleToCurrency(request.Number);
             }
             catch (FormatException ex)
             {

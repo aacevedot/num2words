@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Server.Test.Converters
 {
-    public class WordsEncoderTests
+    public class CurrencyConverterTests
     {
         [Theory]
         [InlineData(-0.0, "zero dollars")]

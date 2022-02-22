@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Server.Encoders
+namespace Server.Converters
 {
     public static class CurrencyConverter
     {

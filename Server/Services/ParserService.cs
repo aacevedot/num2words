@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using num2words;
+using Server.Converters;
 
 namespace Server.Services
 {
@@ -20,7 +21,7 @@ namespace Server.Services
             string encoded;
             try
             {
-                encoded = WordsEncoder.DoubleToCurrency(request.Number);
+                encoded = CurrencyConverter.FromDoubleToCurrency(request.Number);
             }
             catch (Exception ex)
             {

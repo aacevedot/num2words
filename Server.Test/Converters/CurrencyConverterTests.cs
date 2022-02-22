@@ -1,7 +1,8 @@
 using System;
+using Server.Converters;
 using Xunit;
 
-namespace Server.Test
+namespace Server.Test.Converters
 {
     public class WordsEncoderTests
     {
@@ -23,7 +24,7 @@ namespace Server.Test
             "nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine dollars and ninety-nine cents")]
         public void Test_DoubleToCurrency(double input, string expected)
         {
-            var words = WordsEncoder.FromDoubleToCurrency(input);
+            var words = CurrencyConverter.FromDoubleToCurrency(input);
             Assert.Equal(expected, words);
         }
 
@@ -31,7 +32,7 @@ namespace Server.Test
         [InlineData(12.12, new[] { "twelve", "twelve" })]
         public void Test_DoubleToWords(double input, string[] expected)
         {
-            var words = WordsEncoder.DoubleToWords(input);
+            var words = CurrencyConverter.DoubleToWords(input);
             Assert.Equal(expected, words);
         }
 
@@ -82,11 +83,11 @@ namespace Server.Test
         {
             if (string.IsNullOrEmpty(expected))
             {
-                Assert.Throws<ArgumentOutOfRangeException>(() => WordsEncoder.IntegerToWords(input));
+                Assert.Throws<ArgumentOutOfRangeException>(() => CurrencyConverter.IntegerToWords(input));
                 return;
             }
 
-            var words = WordsEncoder.IntegerToWords(input);
+            var words = CurrencyConverter.IntegerToWords(input);
             Assert.Equal(expected, words);
         }
     }

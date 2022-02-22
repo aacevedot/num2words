@@ -85,7 +85,7 @@ namespace WpfClient
             if (number >= 1E+12)
             {
                 PrimaryText.Text = "Number too long! 😥";
-                SecondaryText.Text = "Come on! You do not have that much money. Try again with a realistic amount! 😜";
+                SecondaryText.Text = "Try again with a realistic amount! 😜";
                 return;
             }
 

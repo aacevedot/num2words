@@ -18,21 +18,33 @@ namespace Server.Services
 
         public override Task<WordsResponse> FromNumberToWords(NumberRequest request, ServerCallContext context)
         {
-            string encoded;
+            string converted;
             try
             {
-                encoded = CurrencyConverter.FromDoubleToCurrency(request.Number);
+                converted = CurrencyConverter.FromDoubleToCurrency(request.Number);
+            }
+            catch (FormatException ex)
+            {
+                _logger.LogError(ex.Message);
+                var status = new Status(StatusCode.FailedPrecondition, "number cannot be converted");
+                throw new RpcException(status);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                _logger.LogError(ex.Message);
+                var status = new Status(StatusCode.InvalidArgument, ex.Message);
+                throw new RpcException(status);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
-                var status = new Status(StatusCode.Internal, "An error occurred when converting the number to words");
+                _logger.LogCritical(ex.Message);
+                var status = new Status(StatusCode.Internal, "critical error while processing the request");
                 throw new RpcException(status);
             }
 
             var response = new WordsResponse
             {
-                Words = encoded
+                Words = converted
             };
 
             return Task.FromResult(response);

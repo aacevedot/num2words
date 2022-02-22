@@ -8,7 +8,7 @@ using Grpc.Core;
 
 namespace CliClient
 {
-    class Program
+    internal static class Program
     {
         private static readonly Regex Cleaner = new(@"\s+");
 

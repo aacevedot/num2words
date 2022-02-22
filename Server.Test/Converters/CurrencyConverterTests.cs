@@ -23,7 +23,7 @@ namespace Server.Test
             "nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred ninety-nine dollars and ninety-nine cents")]
         public void Test_DoubleToCurrency(double input, string expected)
         {
-            var words = WordsEncoder.DoubleToCurrency(input);
+            var words = WordsEncoder.FromDoubleToCurrency(input);
             Assert.Equal(expected, words);
         }
 

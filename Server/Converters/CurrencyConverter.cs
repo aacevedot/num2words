@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace Server
+namespace Server.Encoders
 {
-    public static class WordsEncoder
+    public static class CurrencyConverter
     {
         private static readonly Dictionary<int, string> SingularNumbers = new()
         {
@@ -38,7 +38,7 @@ namespace Server
             [9] = "ninety"
         };
 
-        public static string DoubleToCurrency(double number)
+        public static string FromDoubleToCurrency(double number)
         {
             var converted = DoubleToWords(number);
 
@@ -58,7 +58,6 @@ namespace Server
             return asCurrency;
         }
 
-        // TODO: Make this method private?
         public static string[] DoubleToWords(double number)
         {
             // TODO: Check if this rounding approach makes sense

@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
@@ -16,8 +17,18 @@ namespace Server.Services
 
         public override Task<WordsResponse> FromNumberToWords(NumberRequest request, ServerCallContext context)
         {
-            // TODO: Capture exceptions
-            var encoded = WordsEncoder.DoubleToCurrency(request.Number);
+            string encoded;
+            try
+            {
+                encoded = WordsEncoder.DoubleToCurrency(request.Number);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                var status = new Status(StatusCode.Internal, "An error occurred when converting the number to words");
+                throw new RpcException(status);
+            }
+
             var response = new WordsResponse
             {
                 Words = encoded

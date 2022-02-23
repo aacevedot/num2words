@@ -24,6 +24,7 @@ namespace CliClient
             httpClientHandler.ServerCertificateCustomValidationCallback =
                 HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
+            // TODO: Allow address changes
             const string server = "https://localhost:5001";
             var channel = GrpcChannel.ForAddress(server, new GrpcChannelOptions
             {

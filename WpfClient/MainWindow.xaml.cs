@@ -1,11 +1,5 @@
-﻿using Grpc.Net.Client;
-using num2words;
-using System;
-using System.Globalization;
-using System.Net.Http;
-using System.Net.Mime;
+﻿using System;
 using System.Windows;
-using Grpc.Core;
 using System.Text.RegularExpressions;
 
 namespace WpfClient
@@ -17,19 +11,30 @@ namespace WpfClient
     {
         private readonly Client _client;
         private static readonly Regex Cleaner = new(@"\s+");
-        private const string ServerEndpoint = "https://localhost:5001";
 
         public MainWindow()
         {
             InitializeComponent();
-            _client = new Client(ServerEndpoint);
-            SetLabels(TextLabels.LetsConvert, TextLabels.InputNumber);
+            _client = new Client();
+            SetTextServerInput(_client.CurrentServerEndpoint());
+            SetTextServerLabel(TextLabels.ServerAddressDefault);
+            SetTextMainLabels(TextLabels.LetsConvert, TextLabels.InputNumber);
         }
 
-        private void SetLabels(string primary, string secondary)
+        private void SetTextMainLabels(string primary, string secondary)
         {
             PrimaryText.Text = primary;
             SecondaryText.Text = secondary;
+        }
+
+        private void SetTextServerInput(string address)
+        {
+            ServerInput.Text = address;
+        }
+
+        private void SetTextServerLabel(string message)
+        {
+            ServerLabel.Text = message;
         }
 
         private async void ConvertButton_Click(object sender, RoutedEventArgs e)
@@ -37,7 +42,7 @@ namespace WpfClient
             var input = InputField.Text;
             if (string.IsNullOrEmpty(input))
             {
-                SetLabels(TextLabels.EmptyInput, TextLabels.EnterValid);
+                SetTextMainLabels(TextLabels.EmptyInput, TextLabels.EnterValid);
                 return;
             }
 
@@ -49,42 +54,40 @@ namespace WpfClient
             }
             catch (FormatException)
             {
-                SetLabels(TextLabels.InvalidInput, TextLabels.EnterValid);
+                SetTextMainLabels(TextLabels.InvalidInput, TextLabels.EnterValid);
                 return;
             }
 
-            SetLabels(TextLabels.SendingRequest, TextLabels.CurrentTime());
+            SetTextMainLabels(TextLabels.SendingRequest, TextLabels.CurrentTime());
 
-            var request = new NumberRequest { Number = number };
-            string message;
+            var response = await _client.ConvertNumber(number);
 
+            SetTextMainLabels(response, TextLabels.CurrentTime());
+        }
+
+        private void ChangeServerButton_Click(object sender, RoutedEventArgs e)
+        {
+            var current = _client.CurrentServerEndpoint();
+            if (current.Equals(ServerInput.Text))
+            {
+                SetTextServerLabel(TextLabels.ServerAddressUnchanged);
+                return;
+            }
+
+            Uri newServerEndpoint;
             try
             {
-                var response = await _client.ParserClient.FromNumberToWordsAsync(request);
-                message = response == null ? TextLabels.None : TextLabels.CurrencyResponse(response.Words);
+                newServerEndpoint = new Uri(ServerInput.Text);
             }
-            catch (RpcException ex) when (ex.StatusCode == StatusCode.Internal)
+            catch (Exception ex)
             {
-                message = TextLabels.ServerInternalError;
-            }
-            catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
-            {
-                message = TextLabels.ServerUnavailableError;
-            }
-            catch (RpcException ex) when (ex.StatusCode == StatusCode.DeadlineExceeded)
-            {
-                message = TextLabels.ServerDeadlineError;
-            }
-            catch (RpcException ex) when (ex.StatusCode == StatusCode.FailedPrecondition)
-            {
-                message = TextLabels.ServerArgumentError;
-            }
-            catch (RpcException ex) when (ex.StatusCode == StatusCode.InvalidArgument)
-            {
-                message = TextLabels.ServerArgumentError;
+                SetTextServerLabel(ex.Message);
+                return;
             }
 
-            SetLabels(message, TextLabels.CurrentTime());
+            _client.SetServerEndpoint(newServerEndpoint);
+            
+            SetTextServerLabel(TextLabels.ServerAddressUpdated);
         }
     }
 }

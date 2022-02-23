@@ -4,10 +4,20 @@ using System.Threading.Tasks;
 using num2words;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using CommandLine;
+using CommandLine.Text;
 using Grpc.Core;
+using Parser = num2words.Parser;
 
 namespace CliClient
 {
+    internal class CliClientOptions : BaseAttribute
+    {
+        [Option('s', "server", Required = true, Default = "https://localhost:9001",
+            HelpText = "Server endpoint (format: https://IP:PORT)")]
+        public Uri ServerAddress { get; set; }
+    }
+
     internal static class Program
     {
         private static readonly Regex Cleaner = new(@"\s+");
@@ -19,19 +29,37 @@ namespace CliClient
             Console.CancelKeyPress += HandleCancelKeyPress;
             AppDomain.CurrentDomain.ProcessExit += HandleProcessExit;
 
+            CliClientOptions options = null;
+
+            var parser = new CommandLine.Parser();
+
+            var arguments = parser.ParseArguments<CliClientOptions>(args);
+            arguments.WithParsed(parsed => options = parsed);
+            arguments.WithNotParsed(_ =>
+            {
+                var help = new HelpText
+                {
+                    AutoVersion = false,
+                    AddDashesToOption = true
+                };
+                help = HelpText.DefaultParsingErrorsHandler(arguments, help);
+                help.AddOptions(arguments);
+                Console.Error.Write(help);
+
+                Environment.Exit(1);
+            });
+
             var httpClientHandler = new HttpClientHandler();
             // NOTE: Only for dev purposes. Prod applications should use valid certs.
             httpClientHandler.ServerCertificateCustomValidationCallback =
                 HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
 
-            // TODO: Allow address changes
-            const string server = "https://localhost:5001";
-            var channel = GrpcChannel.ForAddress(server, new GrpcChannelOptions
+            var channel = GrpcChannel.ForAddress(options.ServerAddress.ToString(), new GrpcChannelOptions
             {
                 HttpHandler = httpClientHandler
             });
             var client = new Parser.ParserClient(channel);
-            var options = new CallOptions().WithWaitForReady();
+            var requestOptions = new CallOptions().WithWaitForReady();
 
             while (true)
             {
@@ -56,7 +84,7 @@ namespace CliClient
                 try
                 {
                     var request = new NumberRequest { Number = number };
-                    var response = await client.FromNumberToWordsAsync(request, options);
+                    var response = await client.FromNumberToWordsAsync(request, requestOptions);
                     Console.WriteLine(response.Words);
                 }
                 catch (RpcException ex) when (ex.StatusCode == StatusCode.Internal)

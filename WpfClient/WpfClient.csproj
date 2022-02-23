@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../CliClient/CliClient.csproj"/>
+        <ProjectReference Include="..\CliClient\CliClient.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

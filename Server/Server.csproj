@@ -6,11 +6,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Protobuf Include="../Protos/Protos.proto" GrpcServices="Server" />
+        <Protobuf Include="..\Protos\Num2Words.proto" GrpcServices="Server"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Grpc.AspNetCore" Version="2.42.0" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.42.0"/>
     </ItemGroup>
 
 </Project>

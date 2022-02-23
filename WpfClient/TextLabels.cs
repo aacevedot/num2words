@@ -20,6 +20,10 @@ namespace WpfClient
         public const string ServerDeadlineError = "It took too long, the server is not responding! 💀";
         public const string ServerArgumentError = "The server rejected your input! 😶";
 
+        public const string ServerAddressDefault = "Using default server address:";
+        public const string ServerAddressUpdated = "Server address updated!";
+        public const string ServerAddressUnchanged = "Already using this server address!";
+
         public static string CurrentTime()
         {
             return $"⏲ {DateTime.Now.ToString(CultureInfo.InvariantCulture)}";

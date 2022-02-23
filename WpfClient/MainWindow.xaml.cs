@@ -15,7 +15,7 @@ namespace WpfClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly Client _client;
+        private Client _client;
         private static readonly Regex Cleaner = new(@"\s+");
         private const string ServerEndpoint = "https://localhost:5001";
 
@@ -23,6 +23,7 @@ namespace WpfClient
         {
             InitializeComponent();
             _client = new Client(ServerEndpoint);
+            ServerInput.Text = ServerEndpoint;
             SetLabels(TextLabels.LetsConvert, TextLabels.InputNumber);
         }
 
@@ -85,6 +86,24 @@ namespace WpfClient
             }
 
             SetLabels(message, TextLabels.CurrentTime());
+        }
+
+        private void ChangeServerButton_Click(object sender, RoutedEventArgs e)
+        {
+            Uri newServer;
+            try
+            {
+                newServer = new Uri(ServerInput.Text);
+            }
+            catch (Exception ex)
+            {
+                ServerLabel.Text = ex.Message;
+                return;
+            }
+
+            _client = new Client(newServer.ToString());
+            //_client.ParserClient.WithHost(newServer.ToString());
+            ServerLabel.Text = "Updated!";
         }
     }
 }

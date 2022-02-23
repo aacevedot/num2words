@@ -10,68 +10,13 @@
         Height="450" Width="800"
         ResizeMode="NoResize">
     <Grid HorizontalAlignment="Right" Width="800" Background="#222831">
+
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="50" />
             <RowDefinition Height="110" />
             <RowDefinition Height="55" />
         </Grid.RowDefinitions>
-        
-        <StackPanel Grid.Row="3"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="0,10,25,10">
-            
-            <TextBlock x:Name="ServerLabel"
-                       Foreground="DarkGray"
-                       VerticalAlignment="Center"
-                       Margin="0,0,10,0"
-                       Text="Server:" />
-
-            <Border CornerRadius="10"
-                    Width="150" Height="20"
-                    Margin="0,0,15,0" 
-                    Background="#393E46">
-                <Grid>
-                    <TextBox x:Name="ServerInput"
-                             BorderThickness="0"
-                             Background="Transparent"
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Center"
-                             Foreground="#CFCFCF"
-                             Text="https://127.0.0.1:9001" />
-                </Grid>
-            </Border>
-
-            <Button x:Name="ChangeServerButton"
-                    Content="Change"
-                    FontSize="12"
-                    FontWeight="Medium"
-                    Click="ChangeServerButton_Click">
-                <Button.Style>
-                    <Style TargetType="Button">
-                        <Setter Property="Foreground" Value="#EEEEEE" />
-                        <Setter Property="Background" Value="#393E46" />
-                        <Setter Property="Cursor" Value="Hand" />
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#33373F" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Button.Style>
-                <Button.Template>
-                    <ControlTemplate TargetType="Button">
-                        <Border Width="80" Height="20"
-                                CornerRadius="12"
-                                Background="{TemplateBinding Background}">
-                            <ContentPresenter VerticalAlignment="Center"
-                                              HorizontalAlignment="Center" />
-                        </Border>
-                    </ControlTemplate>
-                </Button.Template>
-            </Button>
-        </StackPanel>
 
         <emoji:TextBlock x:Name="PrimaryText"
                          Grid.Row="0" Margin="30"
@@ -97,13 +42,16 @@
             <Border CornerRadius="10"
                     Width="350" Height="30"
                     Background="#393E46">
+
                 <Grid>
                     <TextBox x:Name="InputField"
+                             Width="320"
                              Margin="1"
                              BorderThickness="0"
                              Background="Transparent"
                              VerticalAlignment="Center"
                              HorizontalAlignment="Center"
+                             TextAlignment="Center"
                              Padding="5"
                              Foreground="#CFCFCF" />
 
@@ -113,7 +61,8 @@
                                HorizontalAlignment="Center"
                                Margin="10,0,0,0"
                                FontSize="11"
-                               Foreground="DarkGray">
+                               Foreground="#60646A">
+
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
@@ -135,6 +84,7 @@
                     FontWeight="Medium"
                     Width="150" Margin="10"
                     Click="ConvertButton_Click">
+
                 <Button.Style>
                     <Style TargetType="Button">
                         <Setter Property="Foreground" Value="#EEEEEE" />
@@ -147,9 +97,71 @@
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
+
                 <Button.Template>
                     <ControlTemplate TargetType="Button">
                         <Border Width="100" Height="25"
+                                CornerRadius="12"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              HorizontalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,10,25,10">
+
+            <TextBlock x:Name="ServerLabel"
+                       Foreground="DarkGray"
+                       VerticalAlignment="Center"
+                       Margin="0,0,10,0"
+                       Text="Server:" />
+
+            <Border CornerRadius="10"
+                    Width="175" Height="20"
+                    Margin="0,0,15,0"
+                    Background="#393E46">
+
+                <Grid>
+                    <TextBox x:Name="ServerInput"
+                             Width="150"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Center"
+                             TextAlignment="Center"
+                             Foreground="#CFCFCF"
+                             Text="" />
+                </Grid>
+            </Border>
+
+            <Button x:Name="ChangeServerButton"
+                    Content="Change"
+                    FontSize="12"
+                    FontWeight="Medium"
+                    Click="ChangeServerButton_Click">
+
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Foreground" Value="#EEEEEE" />
+                        <Setter Property="Background" Value="#393E46" />
+                        <Setter Property="Cursor" Value="Hand" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#33373F" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Width="80" Height="20"
                                 CornerRadius="12"
                                 Background="{TemplateBinding Background}">
                             <ContentPresenter VerticalAlignment="Center"

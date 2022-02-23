@@ -1,9 +1,5 @@
-﻿using Grpc.Net.Client;
-using num2words;
+﻿using num2words;
 using System;
-using System.Globalization;
-using System.Net.Http;
-using System.Net.Mime;
 using System.Windows;
 using Grpc.Core;
 using System.Text.RegularExpressions;
@@ -17,20 +13,31 @@ namespace WpfClient
     {
         private Client _client;
         private static readonly Regex Cleaner = new(@"\s+");
-        private const string ServerEndpoint = "https://localhost:5001";
+        private string _serverEndpoint = "https://127.0.0.1:9001";
 
         public MainWindow()
         {
             InitializeComponent();
-            _client = new Client(ServerEndpoint);
-            ServerInput.Text = ServerEndpoint;
-            SetLabels(TextLabels.LetsConvert, TextLabels.InputNumber);
+            _client = new Client(_serverEndpoint);
+            SetTextServerInput(_serverEndpoint);
+            SetTextServerLabel(TextLabels.ServerAddressDefault);
+            SetTextMainLabels(TextLabels.LetsConvert, TextLabels.InputNumber);
         }
 
-        private void SetLabels(string primary, string secondary)
+        private void SetTextMainLabels(string primary, string secondary)
         {
             PrimaryText.Text = primary;
             SecondaryText.Text = secondary;
+        }
+
+        private void SetTextServerInput(string address)
+        {
+            ServerInput.Text = address;
+        }
+
+        private void SetTextServerLabel(string message)
+        {
+            ServerLabel.Text = message;
         }
 
         private async void ConvertButton_Click(object sender, RoutedEventArgs e)
@@ -38,7 +45,7 @@ namespace WpfClient
             var input = InputField.Text;
             if (string.IsNullOrEmpty(input))
             {
-                SetLabels(TextLabels.EmptyInput, TextLabels.EnterValid);
+                SetTextMainLabels(TextLabels.EmptyInput, TextLabels.EnterValid);
                 return;
             }
 
@@ -50,11 +57,11 @@ namespace WpfClient
             }
             catch (FormatException)
             {
-                SetLabels(TextLabels.InvalidInput, TextLabels.EnterValid);
+                SetTextMainLabels(TextLabels.InvalidInput, TextLabels.EnterValid);
                 return;
             }
 
-            SetLabels(TextLabels.SendingRequest, TextLabels.CurrentTime());
+            SetTextMainLabels(TextLabels.SendingRequest, TextLabels.CurrentTime());
 
             var request = new NumberRequest { Number = number };
             string message;
@@ -85,11 +92,17 @@ namespace WpfClient
                 message = TextLabels.ServerArgumentError;
             }
 
-            SetLabels(message, TextLabels.CurrentTime());
+            SetTextMainLabels(message, TextLabels.CurrentTime());
         }
 
         private void ChangeServerButton_Click(object sender, RoutedEventArgs e)
         {
+            if (_serverEndpoint.Equals(ServerInput.Text))
+            {
+                SetTextServerLabel(TextLabels.ServerAddressUnchanged);
+                return;
+            }
+
             Uri newServer;
             try
             {
@@ -101,9 +114,10 @@ namespace WpfClient
                 return;
             }
 
-            _client = new Client(newServer.ToString());
-            //_client.ParserClient.WithHost(newServer.ToString());
-            ServerLabel.Text = "Updated!";
+            _serverEndpoint = newServer.ToString();
+            _client = new Client(_serverEndpoint);
+
+            SetTextServerLabel(TextLabels.ServerAddressUpdated);
         }
     }
 }

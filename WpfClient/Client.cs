@@ -1,33 +1,84 @@
-﻿using num2words;
+﻿using System;
+using num2words;
 using System.Net.Http;
+using System.Threading.Tasks;
+using Grpc.Core;
 using Grpc.Net.Client;
 
 namespace WpfClient
 {
     public class Client
     {
-        public Parser.ParserClient ParserClient { get; }
-        private const string DefaultServerAddress = "https://localhost:5001";
+        private Parser.ParserClient _client;
+        private Uri _currentServerEndpoint;
+        private readonly Uri _defaultServerAddress = new("https://localhost:9001");
 
-        public Client(string serverEndpoint)
+        private readonly HttpClientHandler _defaultHttpClientHandler = new HttpClientHandler
         {
-            var serverEndpoint1 = string.IsNullOrEmpty(serverEndpoint)
-                ? DefaultServerAddress
-                : serverEndpoint;
+            // NOTE: Only for dev purposes
+            ServerCertificateCustomValidationCallback =
+                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        };
 
-            var httpClientHandler = new HttpClientHandler
+        public Client()
+        {
+            var channel = GrpcChannel.ForAddress(_defaultServerAddress, new GrpcChannelOptions
             {
-                // NOTE: Only for dev purposes
-                ServerCertificateCustomValidationCallback =
-                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
-            };
-
-            var channel = GrpcChannel.ForAddress(serverEndpoint1, new GrpcChannelOptions
-            {
-                HttpHandler = httpClientHandler
+                HttpHandler = _defaultHttpClientHandler
             });
+            _client = new Parser.ParserClient(channel);
+            _currentServerEndpoint = _defaultServerAddress;
+        }
 
-            ParserClient = new Parser.ParserClient(channel);
+        public string CurrentServerEndpoint()
+        {
+            return _currentServerEndpoint.ToString();
+        }
+
+        public void SetServerEndpoint(Uri server)
+        {
+            var channel = GrpcChannel.ForAddress(server, new GrpcChannelOptions
+            {
+                HttpHandler = _defaultHttpClientHandler
+            });
+            _client = new Parser.ParserClient(channel);
+            _currentServerEndpoint = server;
+        }
+
+        public async Task<string> ConvertNumber(double number)
+        {
+            var request = new NumberRequest { Number = number };
+            string output;
+
+            try
+            {
+                var response = await _client.FromNumberToWordsAsync(request);
+                output = response == null
+                    ? TextLabels.None
+                    : TextLabels.CurrencyResponse(response.Words);
+            }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.Internal)
+            {
+                output = TextLabels.ServerInternalError;
+            }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
+            {
+                output = TextLabels.ServerUnavailableError;
+            }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.DeadlineExceeded)
+            {
+                output = TextLabels.ServerDeadlineError;
+            }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.FailedPrecondition)
+            {
+                output = TextLabels.ServerArgumentError;
+            }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.InvalidArgument)
+            {
+                output = TextLabels.ServerArgumentError;
+            }
+
+            return output;
         }
     }
 }

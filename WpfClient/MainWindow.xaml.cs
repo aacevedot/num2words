@@ -1,7 +1,5 @@
-﻿using num2words;
-using System;
+﻿using System;
 using System.Windows;
-using Grpc.Core;
 using System.Text.RegularExpressions;
 
 namespace WpfClient
@@ -11,15 +9,14 @@ namespace WpfClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Client _client;
+        private readonly Client _client;
         private static readonly Regex Cleaner = new(@"\s+");
-        private string _serverEndpoint = "https://127.0.0.1:9001";
 
         public MainWindow()
         {
             InitializeComponent();
-            _client = new Client(_serverEndpoint);
-            SetTextServerInput(_serverEndpoint);
+            _client = new Client();
+            SetTextServerInput(_client.CurrentServerEndpoint());
             SetTextServerLabel(TextLabels.ServerAddressDefault);
             SetTextMainLabels(TextLabels.LetsConvert, TextLabels.InputNumber);
         }
@@ -63,60 +60,33 @@ namespace WpfClient
 
             SetTextMainLabels(TextLabels.SendingRequest, TextLabels.CurrentTime());
 
-            var request = new NumberRequest { Number = number };
-            string message;
+            var response = await _client.ConvertNumber(number);
 
-            try
-            {
-                var response = await _client.ParserClient.FromNumberToWordsAsync(request);
-                message = response == null ? TextLabels.None : TextLabels.CurrencyResponse(response.Words);
-            }
-            catch (RpcException ex) when (ex.StatusCode == StatusCode.Internal)
-            {
-                message = TextLabels.ServerInternalError;
-            }
-            catch (RpcException ex) when (ex.StatusCode == StatusCode.Unavailable)
-            {
-                message = TextLabels.ServerUnavailableError;
-            }
-            catch (RpcException ex) when (ex.StatusCode == StatusCode.DeadlineExceeded)
-            {
-                message = TextLabels.ServerDeadlineError;
-            }
-            catch (RpcException ex) when (ex.StatusCode == StatusCode.FailedPrecondition)
-            {
-                message = TextLabels.ServerArgumentError;
-            }
-            catch (RpcException ex) when (ex.StatusCode == StatusCode.InvalidArgument)
-            {
-                message = TextLabels.ServerArgumentError;
-            }
-
-            SetTextMainLabels(message, TextLabels.CurrentTime());
+            SetTextMainLabels(response, TextLabels.CurrentTime());
         }
 
         private void ChangeServerButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_serverEndpoint.Equals(ServerInput.Text))
+            var current = _client.CurrentServerEndpoint();
+            if (current.Equals(ServerInput.Text))
             {
                 SetTextServerLabel(TextLabels.ServerAddressUnchanged);
                 return;
             }
 
-            Uri newServer;
+            Uri newServerEndpoint;
             try
             {
-                newServer = new Uri(ServerInput.Text);
+                newServerEndpoint = new Uri(ServerInput.Text);
             }
             catch (Exception ex)
             {
-                ServerLabel.Text = ex.Message;
+                SetTextServerLabel(ex.Message);
                 return;
             }
 
-            _serverEndpoint = newServer.ToString();
-            _client = new Client(_serverEndpoint);
-
+            _client.SetServerEndpoint(newServerEndpoint);
+            
             SetTextServerLabel(TextLabels.ServerAddressUpdated);
         }
     }

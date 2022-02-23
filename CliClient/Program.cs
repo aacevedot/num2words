@@ -99,6 +99,14 @@ namespace CliClient
                 {
                     Console.WriteLine("server timeout, please try again!");
                 }
+                catch (RpcException ex) when (ex.StatusCode == StatusCode.FailedPrecondition)
+                {
+                    Console.WriteLine("server rejected the request, please try again!");
+                }
+                catch (RpcException ex) when (ex.StatusCode == StatusCode.InvalidArgument)
+                {
+                    Console.WriteLine("server rejected the request, please try again!");
+                }
             }
         }
 

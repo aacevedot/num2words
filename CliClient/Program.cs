@@ -11,9 +11,14 @@ namespace CliClient
     internal static class Program
     {
         private static readonly Regex Cleaner = new(@"\s+");
+        private static bool _sigint;
+        private static bool _sigterm;
 
         public static async Task Main(string[] args)
         {
+            Console.CancelKeyPress += HandleCancelKeyPress;
+            AppDomain.CurrentDomain.ProcessExit += HandleProcessExit;
+
             var httpClientHandler = new HttpClientHandler();
             // NOTE: Only for dev purposes. Prod applications should use valid certs.
             httpClientHandler.ServerCertificateCustomValidationCallback =
@@ -66,6 +71,20 @@ namespace CliClient
                     Console.WriteLine("server timeout, please try again!");
                 }
             }
+        }
+
+        private static void HandleProcessExit(object sender, EventArgs e)
+        {
+            if (_sigint) return;
+            _sigterm = true;
+            Environment.ExitCode = 0;
+        }
+
+        private static void HandleCancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            if (_sigterm) return;
+            _sigint = true;
+            Environment.Exit(0);
         }
     }
 }

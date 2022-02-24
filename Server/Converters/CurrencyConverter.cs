@@ -3,6 +3,13 @@ using System.Globalization;
 
 namespace Server.Converters
 {
+    /// <summary>
+    /// Currency conversion functionalities
+    /// </summary>
+    /// <remarks>
+    /// The conversion if from numbers to currencies in words
+    /// not between different currencies
+    /// </remarks>
     public static class CurrencyConverter
     {
         private static readonly Currency Currency = new()
@@ -14,6 +21,14 @@ namespace Server.Converters
             Symbol = "$"
         };
 
+        /// <summary>
+        /// Transform a given number into currency in words
+        /// </summary>
+        /// <param name="number">Number to be converted</param>
+        /// <returns>The number representation as currency in words</returns>
+        /// <remarks>
+        /// In the future, this could be refactored as an extension method
+        /// </remarks>
         public static string FromDoubleToCurrency(double number)
         {
             // TODO: Check if this rounding approach makes sense
@@ -58,7 +73,7 @@ namespace Server.Converters
         private static long FixTens(string segment, long number)
         {
             // sanity check for numbers lower than 10 after separator
-            return !segment.StartsWith("0") && number < 10 ? number *= 10 : number;
+            return !segment.StartsWith("0") && number < 10 ? number * 10 : number;
         }
     }
 }

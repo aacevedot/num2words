@@ -12,6 +12,7 @@ namespace WpfClient
         private readonly Client _client;
         private static readonly Regex Cleaner = new(@"\s+");
 
+        /// <inheritdoc />
         public MainWindow()
         {
             InitializeComponent();

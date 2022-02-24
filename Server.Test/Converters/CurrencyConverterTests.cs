@@ -3,8 +3,16 @@ using Xunit;
 
 namespace Server.Test.Converters
 {
+    /// <summary>
+    /// CurrencyConverter unit tests
+    /// </summary>
     public class CurrencyConverterTests
     {
+        /// <summary>
+        /// Test the conversion of a number into currency in words
+        /// </summary>
+        /// <param name="input">Number to be converted</param>
+        /// <param name="expected">Expected currency in words</param>
         [Theory]
         [InlineData(-0.0, "zero dollars")]
         [InlineData(-19, "minus nineteen dollars")]

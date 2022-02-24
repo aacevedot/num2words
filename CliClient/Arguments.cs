@@ -7,8 +7,8 @@ namespace CliClient
 {
     public class CliClientOptions : BaseAttribute
     {
-        [Option('s', "server", Required = true, Default = "https://localhost:9001",
-            HelpText = "Server endpoint (format: https://IP:PORT)")]
+        [Option('s', "server", Required = true,
+            HelpText = "Server endpoint (example: https://127.0.0.1:9001)")]
         public Uri ServerAddress { get; set; }
     }
 

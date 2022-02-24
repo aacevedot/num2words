@@ -4,8 +4,19 @@ using Xunit;
 
 namespace Server.Test.Converters
 {
+    /// <summary>
+    /// IntegerConverter unit tests
+    /// </summary>
     public class IntegerConverterTests
     {
+        /// <summary>
+        /// Test the conversion of an integer into words
+        /// </summary>
+        /// <param name="input">Integer to be converted</param>
+        /// <param name="expected">Expected words</param>
+        /// <remarks>
+        /// The last test cases are meant for checking if a number cannot be converted
+        /// </remarks>
         [Theory]
         [InlineData(0, "zero")]
         [InlineData(1, "one")]

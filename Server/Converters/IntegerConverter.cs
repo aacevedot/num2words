@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Server.Converters
 {
+    /// <summary>
+    /// Integer conversion functionalities
+    /// </summary>
     public static class IntegerConverter
     {
         private static readonly Dictionary<int, string> SingularNumbers = new()
@@ -37,6 +40,11 @@ namespace Server.Converters
             [9] = "ninety"
         };
 
+        /// <summary>
+        /// Transform a given integer to words
+        /// </summary>
+        /// <param name="integer">Integer to be converted</param>
+        /// <returns>The integer representation as words</returns>
         public static string IntegerToWords(long integer)
         {
             var words = string.Empty;

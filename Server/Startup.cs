@@ -7,13 +7,25 @@ using Server.Services;
 
 namespace Server
 {
+    /// <summary>
+    /// Server startup
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Sets the available services
+        /// </summary>
+        /// <param name="services"></param>
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddGrpc();
         }
 
+        /// <summary>
+        /// Sets the routing and the available endpoints
+        /// </summary>
+        /// <param name="app">Application</param>
+        /// <param name="env">Environment</param>
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -26,7 +38,6 @@ namespace Server
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGrpcService<ParserService>();
-                // TODO: This might not be needed
                 endpoints.MapGet("/",
                     async context =>
                     {

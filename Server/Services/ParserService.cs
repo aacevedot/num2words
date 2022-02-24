@@ -7,15 +7,19 @@ using Server.Converters;
 
 namespace Server.Services
 {
+    /// <inheritdoc />
     public class ParserService : Parser.ParserBase
     {
         private readonly ILogger<ParserService> _logger;
 
+        /// <inheritdoc />
         public ParserService(ILogger<ParserService> logger)
         {
             _logger = logger;
         }
 
+        /// <inheritdoc />
+        /// <exception cref="RpcException">If the conversion fails</exception>
         public override Task<WordsResponse> FromNumberToWords(NumberRequest request, ServerCallContext context)
         {
             string converted;

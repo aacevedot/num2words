@@ -36,8 +36,10 @@ namespace CliClient
         /// <summary>
         /// Calls the underlying gRPC service for converting a given number into words
         /// </summary>
-        /// <param name="number"></param>
-        /// <returns>The words representation of the given number</returns>
+        /// <param name="number">Number to be converted</param>
+        /// <returns>
+        /// The number as words or the error message in case the number could not be converted
+        /// </returns>
         public async Task<string> ConvertNumber(double number)
         {
             string output;

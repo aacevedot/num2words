@@ -26,6 +26,9 @@ namespace Server.Converters
         /// </summary>
         /// <param name="number">Number to be converted</param>
         /// <returns>The number representation as currency in words</returns>
+        /// <remarks>
+        /// In the future, this could be refactored as an extension method
+        /// </remarks>
         public static string FromDoubleToCurrency(double number)
         {
             // TODO: Check if this rounding approach makes sense

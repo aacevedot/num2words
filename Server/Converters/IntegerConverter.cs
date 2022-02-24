@@ -45,6 +45,9 @@ namespace Server.Converters
         /// </summary>
         /// <param name="integer">Integer to be converted</param>
         /// <returns>The integer representation as words</returns>
+        /// <remarks>
+        /// In the future, this could be refactored as an extension method
+        /// </remarks>
         public static string IntegerToWords(long integer)
         {
             var words = string.Empty;

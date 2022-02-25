@@ -43,7 +43,6 @@ dotnet run
 The default binding address is `https://0.0.0.0:9001`. If you want to customize it, then you can run:
 
 ````shell
-cd .\Server\
 dotnet run --urls "http://127.0.0.1:9000;https://127.0.0.1:9001"
 ````
 

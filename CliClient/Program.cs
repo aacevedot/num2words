@@ -16,6 +16,11 @@ namespace CliClient
             AppDomain.CurrentDomain.ProcessExit += HandleProcessExit;
 
             var options = Arguments.Parse(args);
+            if (options == null)
+            {
+                Environment.Exit(1);
+            }
+
             var client = new Client(options.ServerAddress);
 
             while (true)

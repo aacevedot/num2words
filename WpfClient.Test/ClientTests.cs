@@ -31,8 +31,14 @@ namespace WpfClient.Test
         }
     }
 
+    /// <summary>
+    /// Client test cases
+    /// </summary>
     public class ClientTests
     {
+        /// <summary>
+        /// Tests successful number conversion
+        /// </summary>
         [Fact]
         public async void TestClient_ConvertNumber_Success()
         {
@@ -54,6 +60,14 @@ namespace WpfClient.Test
             Assert.Equal(TextLabels.CurrencyResponse("Forty-two"), words);
         }
 
+        /// <summary>
+        /// Tests erroneous number conversion
+        /// </summary>
+        /// <param name="status">RPC status</param>
+        /// <param name="expectedOutput">Expected output</param>
+        /// <remarks>
+        /// When the expected output is null or empty it means that a RCPException should be thrown
+        /// </remarks>
         [Theory]
         [InlineData(StatusCode.Internal, TextLabels.ServerInternalError)]
         [InlineData(StatusCode.Unavailable, TextLabels.ServerUnavailableError)]

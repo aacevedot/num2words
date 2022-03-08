@@ -15,7 +15,7 @@ namespace CliClient
         private readonly Parser.ParserClient _client;
 
         /// <summary>
-        /// Constructor
+        /// Sets a default client from the specified Uri
         /// </summary>
         /// <param name="server">Server endpoint</param>
         public Client(Uri server)
@@ -31,6 +31,15 @@ namespace CliClient
             });
 
             _client = new Parser.ParserClient(channel);
+        }
+
+        /// <summary>
+        /// Sets a customized client
+        /// </summary>
+        /// <param name="cli"></param>
+        public Client(Parser.ParserClient cli)
+        {
+            _client = cli;
         }
 
         /// <summary>

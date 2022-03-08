@@ -37,6 +37,15 @@ namespace WpfClient
         }
 
         /// <summary>
+        /// Sets a customized client
+        /// </summary>
+        /// <param name="cli"></param>
+        public Client(Parser.ParserClient cli)
+        {
+            _client = cli;
+        }
+
+        /// <summary>
         /// Retrieves the current server endpoint used by the client
         /// </summary>
         /// <returns>Server endpoint address as a string</returns>

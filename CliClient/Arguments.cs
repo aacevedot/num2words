@@ -48,8 +48,6 @@ namespace CliClient
                 help = HelpText.DefaultParsingErrorsHandler(arguments, help);
                 help.AddOptions(arguments);
                 Console.Error.Write(help);
-
-                Environment.Exit(1);
             });
             return options;
         }

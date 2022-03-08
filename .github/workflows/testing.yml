@@ -30,3 +30,17 @@ jobs:
           dotnet-version: ${{ matrix.dotnet-version }}
       - name: Run tests
         run: dotnet test ./CliClient.Test/CliClient.Test.csproj
+  
+  wpfclient-testing:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '5.0.x' ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Run tests
+        run: dotnet test ./WpfClient.Test/WpfClient.Test.csproj
